@@ -18,3 +18,8 @@ output "public_subnets" {
   value       = module.vpc.public_subnets
   description = "IDs of the public subnets / IDs de las subredes públicas"
 }
+
+output "ecr_repository_url" {
+  value       = module.ecr.repository_url
+  description = "URL of the created ECR Repository / URL del repositorio ECR creado"
+}

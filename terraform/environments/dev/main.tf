@@ -42,3 +42,14 @@ module "vpc" {
   #FinOps: En Dev usamos 1 solo NAT Gateway para ahorrar costes de AWS
   single_nat_gateway = true
 }
+
+# ------------------------------------------------------------------------------
+# 2. Módulo de Registro de Contenedores (ECR) / Container Registry Module (ECR)
+# ------------------------------------------------------------------------------
+module "ecr" {
+  source = "../../modules/ecr"
+
+  environment          = "dev"
+  repository_name      = "saas-platform-dev-api"
+  image_tag_mutability = "MUTABLE" # only in dev we use mutable tags to speed up testing / Solo en Dev usamos tags mutables para agilizar pruebas
+}
