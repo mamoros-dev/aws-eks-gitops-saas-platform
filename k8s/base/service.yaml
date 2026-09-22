@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: saas-backend-service
+  namespace: saas-app
+  labels:
+    app: saas-backend
+spec:
+  type: ClusterIP # Default service type, exposes the service on a cluster-internal IP / Tipo de servicio predeterminado, expone el servicio en una IP interna del clúster
+  ports:
+  - port: 80 # Port for the service to listen on / Puerto para que el servicio escuche
+    targetPort: 80 # Port on the container to forward traffic to / Puerto en el contenedor al que se redirigirá el tráfico
+    protocol: TCP
+    name: http
+  selector:
+    app: saas-backend # label to match the pods for this service / etiqueta para coincidir con los pods de este servicio

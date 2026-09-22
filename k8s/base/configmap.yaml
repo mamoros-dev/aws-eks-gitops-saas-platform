@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: saas-backend-config
+  namespace: saas-app # name for the namespace
+data: # Pair of key-value data that can be consumed by pods in the namespace / Pareja de datos clave-valor que pueden ser consumidos por los pods en el namespace
+  ENVIRONMENT: "development"
+  LOG_LEVEL: "info"
+  APP_NAME: "SaaS Multi-Tenant API"

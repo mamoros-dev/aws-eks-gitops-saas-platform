@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: saas-backend
+  namespace: saas-app
+  labels:
+    app: saas-backend
+spec:
+  replicas: 2 # number of replicas for the deployment / número de réplicas para el despliegue
+  selector:
+    matchLabels:
+      app: saas-backend # label to match the pods for this deployment / etiqueta para coincidir con los pods de este despliegue
+  template:
+    metadata:
+      labels:
+        app: saas-backend # label to identify the pods for this deployment / etiqueta para identificar los pods de este despliegue
+    spec:
+      containers:
+      - name: api
+        # Imagen temporal de pruebas hasta que publiquemos la nuestra en ECR / Temporary test image until we publish our own in ECR
+        image: nginxdemos/hello:plain-text
+        ports:
+        - containerPort: 80 # port for the container to listen on / puerto para que el contenedor escuche
+          name: http
+        envFrom:
+        - configMapRef: # reference to the ConfigMap for environment variables / referencia al ConfigMap para variables de entorno
+            name: saas-backend-config # name of the ConfigMap to reference / nombre del ConfigMap a referenciar
+        resources:
+          requests: # Minimum resources requested for the container / Recursos mínimos solicitados para el contenedor
+            memory: "64Mi"
+            cpu: "50m"
+          limits: # Maximum resources allowed for the container / Recursos máximos permitidos para el contenedor
+            memory: "128Mi"
+            cpu: "250m"
+        livenessProbe: # probe to check if the container is alive / sonda para verificar si el contenedor está vivo
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5 # Wait time before the first probe / Tiempo de espera antes de la primera sonda
+          periodSeconds: 10 # Check interval for the probe / Intervalo de verificación para la sonda
+        readinessProbe: # probe to check if the container is ready to serve traffic / sonda para verificar si el contenedor está listo para servir tráfico
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5 # If the container is not ready, wait time before the first probe / Si el contenedor no está listo, tiempo de espera antes de la primera sonda
+          periodSeconds: 5 # Check interval for the probe / Intervalo de verificación para la sonda
