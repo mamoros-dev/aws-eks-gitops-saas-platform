@@ -36,7 +36,7 @@ module "eks" {
     nodes = {
       # exceed lenght limit of 32 characters for the name of the node group
       #name           = "${var.cluster_name}-node-group"
-      name            = "dev-node-group"
+      name            = "node-group-dev"
       use_name_prefix = false
 
       # Amazon Linux 2023 with EKS 1.32

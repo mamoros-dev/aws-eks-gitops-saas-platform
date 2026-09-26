@@ -55,8 +55,8 @@ module "eks" {
   private_subnets = module.vpc.private_subnets
 
   # Node configuration for the Dev environment (FinOps: 2 nodes t3.medium) / Configuración de nodos para el entorno Dev (FinOps: 2 nodos t3.medium)
-  instance_types = ["t3.micro"]
-  min_size       = 1
-  max_size       = 3
-  desired_size   = 2
+  instance_types = ["t3.small"]
+  min_size       = 3
+  max_size       = 4
+  desired_size   = 3
 }
