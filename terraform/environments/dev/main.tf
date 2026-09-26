@@ -4,20 +4,6 @@
 # Descripción: Punto de entrada principal para la infraestructura de Desarrollo
 # ==============================================================================
 
-# Configuración del Proveedor AWS / AWS Provider Configuration
-provider "aws" {
-  region = var.aws_region
-
-  default_tags {
-    tags = {
-      Project     = "SaaS-Platform"
-      Environment = "dev"
-      Owner       = "Miguel Amoros"
-      ManagedBy   = "Terraform"
-    }
-  }
-}
-
 # ------------------------------------------------------------------------------
 # 1. Módulo de Red (VPC) / Network Module (VPC)
 # ------------------------------------------------------------------------------

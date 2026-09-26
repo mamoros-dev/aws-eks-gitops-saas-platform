@@ -61,3 +61,34 @@ module "eks" {
     }
   )
 }
+
+# ==============================================================================
+# AWS Load Balancer Controller - IAM Policy & IRSA Role
+# ==============================================================================
+
+# 1. Official IAM Policy for AWS Load Balancer Controller
+# 1. Política de IAM oficial para AWS Load Balancer Controller
+resource "aws_iam_policy" "aws_lb_controller" {
+  name        = "${var.cluster_name}-aws-lb-controller-policy"
+  description = "IAM policy for AWS Load Balancer Controller"
+  policy      = file("${path.module}/policies/aws_lb_controller_policy.json")
+}
+
+# 2. IAM Role associated with the OIDC Provider (IRSA)
+# 2. IAM Role asociado al OIDC Provider (IRSA)
+module "aws_lb_controller_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.39"
+
+  role_name      = "${var.cluster_name}-aws-lb-controller"
+  attach_load_balancer_controller_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:aws-load-balancer-controller"]
+    }
+  }
+
+  tags = var.tags
+}
