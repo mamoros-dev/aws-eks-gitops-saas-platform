@@ -62,14 +62,14 @@ module "eks" {
 
   environment     = "dev"
   cluster_name    = "saas-platform-dev-eks"
-  cluster_version = "1.30"
+  cluster_version = "1.32"
 
   # Dynamic connection with the outputs of the VPC module / Conexión dinámica con los outputs del módulo VPC
   vpc_id          = module.vpc.vpc_id
   private_subnets = module.vpc.private_subnets
 
   # Node configuration for the Dev environment (FinOps: 2 nodes t3.medium) / Configuración de nodos para el entorno Dev (FinOps: 2 nodos t3.medium)
-  instance_types = ["t3.medium"]
+  instance_types = ["t3.micro"]
   min_size       = 1
   max_size       = 3
   desired_size   = 2
