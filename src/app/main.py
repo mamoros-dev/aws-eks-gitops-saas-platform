@@ -6,12 +6,17 @@
 # Import necessary libraries / Importar bibliotecas necesarias
 import os
 from fastapi import FastAPI
+from prometheus_fastapi_instrumentator import Instrumentator
 
 # Create FastAPI application instance / Crear instancia de la aplicación FastAPI
 app = FastAPI(
     title="SaaS Multi-Tenant API",
     version="2.0.0"
 )
+
+# Automatic instrumentation to expose standard Prometheus metrics (/metrics)
+# Instrumentación automática para exponer métricas estándar de Prometheus (/metrics)
+Instrumentator().instrument(app).expose(app)
 
 # Health check endpoint used by Kubernetes (Liveness/Readiness Probes)
 # Endpoint de salud (Health Check) usado por Kubernetes (Liveness/Readiness Probes)

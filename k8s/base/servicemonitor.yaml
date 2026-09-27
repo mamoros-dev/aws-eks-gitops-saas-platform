@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: saas-backend-monitor
+  namespace: saas-app
+  labels:
+    # Esta etiqueta es CRUCIAL: coincide con el selector del operador de Prometheus
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      app: saas-backend # Coincide con la label de tu Service k8s
+  endpoints:
+    - port: http # Nombre del puerto definido en tu service.yaml
+      path: /metrics # Ruta donde la app expone las métricas Prometheus
+      interval: 15s # Frecuencia con la que Prometheus lee los datos
