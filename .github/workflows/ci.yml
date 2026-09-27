@@ -3,7 +3,7 @@
 # Integración Continua: Compilar y subir imagen Docker a AWS ECR
 # ==============================================================================
 
-name: Build and Push Docker Image to ECR
+name: Build, Push to ECR and Update GitOps Manifests
 
 # 1. TRIGGERS: It runs when there is a push to `main` that modifies the app or the Dockerfile.
 # 1. DISPARADORES: Se ejecuta cuando hay push a main modificando la app o el Dockerfile
@@ -40,6 +40,8 @@ jobs:
       # Paso A: Clonar el código fuente en el runner de GitHub
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # Step B: Authenticate with AWS using OIDC (without static keys)
       # NOTE: We will temporarily use the AWS Login action
@@ -70,10 +72,35 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           # 1. Build the Docker image using the Dockerfile in src/ / Construir la imagen Docker usando el Dockerfile en src/
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./src
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./src
           
           # 2. Push the tags (commit hash and 'latest') to AWS ECR / Subir las etiquetas (hash del commit y latest) a AWS ECR
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
           
           echo "::notice ::Image uploaded successfully: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      # Step E: GitOps Step – Update the tag in kustomization.yaml and push to Git.
+      # Step E: PASO GITOPS - Actualizar el tag en kustomization.yaml y hacer push a Git
+      - name: Update Kustomize Image Tag & Push to Git
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # 1. Install the official Kustomize CLI on the runner / Instalar la CLI oficial de Kustomize en el runner
+          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+          sudo mv kustomize /usr/local/bin/
+
+          # 2. Navigate to the folder where the base manifests are located / Navegar a la carpeta donde residen los manifiestos base
+          cd k8s/base
+
+          # 3. Update the image reference in kustomization.yaml with the current commit hash / Actualizar la referencia de la imagen en kustomization.yaml con el hash del commit actual
+          kustomize edit set image $ECR_REGISTRY/$ECR_REPOSITORY=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+          # 4. Configure the identity of the official GitHub bot / Configurar la identidad del bot oficial de GitHub
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # 5. Commit and push the change only if kustomization.yaml has changed / Hacer commit y push del cambio únicamente si kustomization.yaml ha variado
+          git add kustomization.yaml
+          git diff-index --quiet HEAD || git commit -m "chore(gitops): update app image tag to ${IMAGE_TAG} [skip ci]"
+          git push origin HEAD:main
