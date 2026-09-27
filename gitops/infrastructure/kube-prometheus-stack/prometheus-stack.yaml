@@ -10,22 +10,31 @@ spec:
   source:
     repoURL: 'https://prometheus-community.github.io/helm-charts'
     chart: kube-prometheus-stack
-    targetRevision: 61.3.0 # Versión de Helm Chart de producción
+    targetRevision: 58.2.0
     helm:
-      releaseName: kube-prometheus-stack
       values: |
-        prometheus:
-          prometheusSpec:
-            serviceMonitorSelectorNilUsesHelmValues: false
-            podMonitorSelectorNilUsesHelmValues: false
-            retention: 7d
-            resources:
-              requests:
-                cpu: 150m
-                memory: 256Mi
+        # Desactivamos los webhooks de admisión interna del chart que provocan colisiones RBAC
+        prometheusOperator:
+          admissionWebhooks:
+            enabled: false
+            patch:
+              enabled: false
+          tls:
+            enabled: false
         grafana:
           enabled: true
-          adminPassword: "admin"
+          service:
+            type: ClusterIP
+        prometheus:
+          prometheusSpec:
+            retention: 3d
+            resources:
+              requests:
+                memory: "256Mi"
+                cpu: "100m"
+              limits:
+                memory: "512Mi"
+                cpu: "300m"
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: monitoring
@@ -35,4 +44,5 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true # Recomendado para Custom Resource Definitions (CRDs) grandes de Prometheus
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
