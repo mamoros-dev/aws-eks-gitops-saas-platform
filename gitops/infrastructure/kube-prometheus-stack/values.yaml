@@ -1,0 +1,71 @@
+fullnameOverride: "prometheus-stack"
+
+# Prometheus Server
+prometheus:
+  prometheusSpec:
+    # Allows discovering ServiceMonitors in any namespace without strict label restrictions
+    # Permite descubrir ServiceMonitors en cualquier namespace sin restricción estricta de labels
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    retention: 7d
+    resources:
+      requests:
+        cpu: 150m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 1024Mi
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+
+# Grafana
+grafana:
+  enabled: true
+  adminPassword: "admin" # En producción se sustituirá por Secrets / External Secrets Operator
+  persistence:
+    enabled: true
+    storageClassName: gp3
+    size: 5Gi
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+
+# Exponentes / Collectors de la infraestructura Kubernetes EKS
+nodeExporter:
+  enabled: true
+
+kubeStateMetrics:
+  enabled: true
+
+# We disabled managed EKS components that do not directly expose metrics.
+# Desactivamos componentes gestionados de EKS que no exponen métricas directamente
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeProxy:
+  enabled: false
