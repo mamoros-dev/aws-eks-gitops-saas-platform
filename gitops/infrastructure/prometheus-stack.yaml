@@ -19,6 +19,8 @@ spec:
             enabled: false
             patch:
               enabled: false
+          tls:
+            enabled: false
         grafana:
           enabled: true
           service:
