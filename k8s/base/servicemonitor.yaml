@@ -4,13 +4,13 @@ metadata:
   name: saas-backend-monitor
   namespace: saas-app
   labels:
-    # Esta etiqueta es CRUCIAL: coincide con el selector del operador de Prometheus
+    # # This label is CRUCIAL: it matches the Prometheus operator selector / Esta etiqueta es CRUCIAL: coincide con el selector del operador de Prometheus
     release: kube-prometheus-stack
 spec:
   selector:
     matchLabels:
-      app: saas-backend # Coincide con la label de tu Service k8s
+      app: saas-backend # It matches the label of your K8s Service / Coincide con la label de tu Service k8s
   endpoints:
-    - port: http # Nombre del puerto definido en tu service.yaml
-      path: /metrics # Ruta donde la app expone las métricas Prometheus
-      interval: 15s # Frecuencia con la que Prometheus lee los datos
+    - port: http # Name of the port defined in your service.yaml / Nombre del puerto definido en tu service.yaml
+      path: /metrics # Route where the app exposes Prometheus metrics / Ruta donde la app expone las métricas Prometheus
+      interval: 15s # Frequency at which Prometheus reads the data / Frecuencia con la que Prometheus lee los datos
