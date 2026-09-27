@@ -18,7 +18,6 @@ app = FastAPI(
 # Instrumentación automática para exponer métricas estándar de Prometheus (/metrics)
 Instrumentator().instrument(app).expose(app)
 
-
 # Health check endpoint used by Kubernetes (Liveness/Readiness Probes)
 # Endpoint de salud (Health Check) usado por Kubernetes (Liveness/Readiness Probes)
 @app.get("/")
