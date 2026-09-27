@@ -42,7 +42,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITOPS_PAT_TOKEN }}
 
       # Step B: Authenticate with AWS using OIDC (without static keys)
       # NOTE: We will temporarily use the AWS Login action
