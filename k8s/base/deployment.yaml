@@ -63,10 +63,10 @@ spec:
                   
         resources:
           requests: # Minimum resources requested for the container / Recursos mínimos solicitados para el contenedor
-            memory: "64Mi"
+            memory: "128Mi"
             cpu: "50m"
           limits: # Maximum resources allowed for the container / Recursos máximos permitidos para el contenedor
-            memory: "128Mi"
+            memory: "256Mi"
             cpu: "250m"
         livenessProbe: # probe to check if the container is alive / sonda para verificar si el contenedor está vivo
           httpGet:
