@@ -6,6 +6,7 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
 # ------------------------------------------------------------------------------
 # 1. Lectura de Variables de Entorno / Environment Variables Lookup
@@ -26,7 +27,7 @@ DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_POR
 # ------------------------------------------------------------------------------
 # 3. Motor de SQLAlchemy y Sesión / Engine & Session Generator
 # ------------------------------------------------------------------------------
-engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+engine = create_engine(DATABASE_URL, pool_pre_ping=True, connect_args={"connect_timeout": 3})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
