@@ -21,7 +21,7 @@ DB_NAME = os.getenv("DB_NAME", "appdb")
 # 2. Construcción de la URL de PostgreSQL / Database Connection String
 # Result: postgresql://dbadmin:mi_password@saas-platform-dev-db...:5432/appdb
 # ------------------------------------------------------------------------------
-DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 # ------------------------------------------------------------------------------
 # 3. Motor de SQLAlchemy y Sesión / Engine & Session Generator
