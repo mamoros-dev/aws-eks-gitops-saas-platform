@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # 5. Copy our application's source code.
 # 5. Copiamos el código fuente de nuestra aplicación
-COPY app/ ./app/
+COPY . .
 
 # 6. Expose port 80 inside the container.
 # 6. Exponemos el puerto 80 dentro del contenedor
