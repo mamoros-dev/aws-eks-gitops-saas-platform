@@ -5,7 +5,9 @@
 
 # Import necessary libraries / Importar bibliotecas necesarias
 import os
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Request, Form
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
 from prometheus_fastapi_instrumentator import Instrumentator
 from sqlalchemy import text
 from sqlalchemy.orm import Session
@@ -15,9 +17,6 @@ from app.database import get_db
 # Import DB generator, base engine, and data model / Importar generador de DB, motor base y modelo de datos
 from app.database import get_db, Base, engine
 from app.models import Tenant
-
-# CCreate tables in Amazon RDS if they do not already exist / rear tablas en Amazon RDS si no existen previamente
-Base.metadata.create_all(bind=engine)
 
 # Create FastAPI application instance / Crear instancia de la aplicación FastAPI
 app = FastAPI(
@@ -32,6 +31,13 @@ templates = Jinja2Templates(directory="app/templates")
 # Instrumentación automática para exponer métricas estándar de Prometheus (/metrics)
 Instrumentator().instrument(app).expose(app)
 
+# Evento de inicio: Crea las tablas de forma segura cuando la app arranca
+@app.on_event("startup")
+def startup_db_client():
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        print(f"Warning: Could not connect to DB on startup: {e}")
 
 # ------------------------------------------------------------------------------
 # NEW: Main Route (Dashboard HTML / UI)
@@ -49,7 +55,7 @@ def read_root_ui(request: Request, db: Session = Depends(get_db)):
     """
     tenants = db.query(Tenant).order_by(Tenant.id.desc()).all()
     return templates.TemplateResponse(
-        "dashboard.html",
+        "index.html",
         {
             "request": request,
             "tenants": tenants,
