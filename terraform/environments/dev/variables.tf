@@ -9,3 +9,15 @@ variable "aws_region" {
   description = "AWS Region for deployment / Región de AWS para el despliegue"
   default     = "eu-west-1"
 }
+
+variable "project_name" {
+  type        = string
+  description = "Project name / Nombre del proyecto"
+  default     = "saas-platform"
+}
+
+variable "environment" {
+  type        = string
+  description = "Environment name / Nombre del entorno"
+  default     = "dev"
+}

@@ -36,3 +36,32 @@ output "eks_cluster_endpoint" {
   value       = module.eks.cluster_endpoint
   description = "Endpoint URL of the EKS Cluster / URL del API Server de Kubernetes"
 }
+
+# ==============================================================================
+# Output values for the RDS PostgreSQL Module
+# ==============================================================================
+
+output "rds_hostname" {
+  value       = aws_db_instance.postgres.address
+  description = "The hostname/endpoint of the RDS PostgreSQL instance / Hostname del endpoint de RDS"
+}
+
+output "rds_port" {
+  value       = aws_db_instance.postgres.port
+  description = "The port on which the RDS PostgreSQL instance accepts connections / Puerto de conexion a RDS"
+}
+
+output "rds_db_name" {
+  value       = aws_db_instance.postgres.db_name
+  description = "The name of the initial database / Nombre de la base de datos inicial"
+}
+
+output "rds_secret_arn" {
+  value       = aws_secretsmanager_secret.db_credentials.arn
+  description = "ARN of the Secrets Manager secret holding DB credentials / ARN del secreto en Secrets Manager"
+}
+
+output "rds_security_group_id" {
+  value       = aws_security_group.rds.id
+  description = "ID of the Security Group attached to RDS / ID del Security Group de RDS"
+}
