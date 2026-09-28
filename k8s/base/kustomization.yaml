@@ -13,4 +13,4 @@ resources:
 images:
 - name: 700213287974.dkr.ecr.eu-west-1.amazonaws.com/saas-platform-dev-api
   newName: 700213287974.dkr.ecr.eu-west-1.amazonaws.com/saas-platform-dev-api
-  newTag: 5196b9b6be34a2a354c762843a76dd92c3613cf1
+  newTag: 5a305223cbab8018365479634af46b0a407f3956
