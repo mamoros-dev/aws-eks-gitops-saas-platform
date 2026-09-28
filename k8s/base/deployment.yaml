@@ -78,7 +78,7 @@ spec:
           failureThreshold: 3 # Check interval for the probe / Intervalo de verificación para la sonda
         readinessProbe: # probe to check if the container is ready to serve traffic / sonda para verificar si el contenedor está listo para servir tráfico
           httpGet:
-            path: /
+            path: /healthz
             port: 80
           initialDelaySeconds: 30 # If the container is not ready, wait time before the first probe / Si el contenedor no está listo, tiempo de espera antes de la primera sonda
           periodSeconds: 5 # Check interval for the probe / Intervalo de verificación para la sonda
