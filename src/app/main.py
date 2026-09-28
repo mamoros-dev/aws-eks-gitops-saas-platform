@@ -110,9 +110,10 @@ def delete_tenant_form(tenant_id: int, db: Session = Depends(get_db)):
 # ------------------------------------------------------------------------------
 # Health Endpoints and REST API unchanged / Endpoints de Salud y API REST sin cambios
 # ------------------------------------------------------------------------------
-@app.get("/healthz")
-def health_check():
-    return {"status": "ok", "version": "v5.0.0"}
+@app.get("/healthz", status_code=200)
+def healthz():
+    """Endpoint ultra-rápido solo para probes de Kubernetes"""
+    return {"status": "ok"}
 
 @app.get("/health/db")
 def health_check_db(db: Session = Depends(get_db)):
