@@ -70,13 +70,13 @@ spec:
             cpu: "250m"
         livenessProbe: # probe to check if the container is alive / sonda para verificar si el contenedor está vivo
           httpGet:
-            path: /healthz
+            path: /
             port: 80
-          initialDelaySeconds: 5 # Wait time before the first probe / Tiempo de espera antes de la primera sonda
+          initialDelaySeconds: 15 # Wait time before the first probe / Tiempo de espera antes de la primera sonda
           periodSeconds: 10 # Check interval for the probe / Intervalo de verificación para la sonda
         readinessProbe: # probe to check if the container is ready to serve traffic / sonda para verificar si el contenedor está listo para servir tráfico
           httpGet:
-            path: /healthz
+            path: /
             port: 80
-          initialDelaySeconds: 5 # If the container is not ready, wait time before the first probe / Si el contenedor no está listo, tiempo de espera antes de la primera sonda
+          initialDelaySeconds: 10 # If the container is not ready, wait time before the first probe / Si el contenedor no está listo, tiempo de espera antes de la primera sonda
           periodSeconds: 5 # Check interval for the probe / Intervalo de verificación para la sonda
