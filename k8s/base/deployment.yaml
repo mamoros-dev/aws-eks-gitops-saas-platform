@@ -25,6 +25,42 @@ spec:
         envFrom:
         - configMapRef: # reference to the ConfigMap for environment variables / referencia al ConfigMap para variables de entorno
             name: saas-backend-config # name of the ConfigMap to reference / nombre del ConfigMap a referenciar
+
+        # ----------------------------------------------------------------------
+        # Environment variables for RDS database / Variables de entorno para la BD RDS
+        # ----------------------------------------------------------------------
+        env:
+        - name: DB_ENGINE
+          valueFrom:
+            secretKeyRef:
+              name: app-db-credentials # Secret name defined in db-secret.yaml / Nombre del Secret definido en db-secret.yaml
+              key: DB_ENGINE
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: app-db-credentials
+              key: DB_HOST
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: app-db-credentials
+              key: DB_PORT
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: app-db-credentials
+              key: DB_NAME
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: app-db-credentials
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-db-credentials
+              key: DB_PASSWORD
+                  
         resources:
           requests: # Minimum resources requested for the container / Recursos mínimos solicitados para el contenedor
             memory: "64Mi"

@@ -5,13 +5,17 @@
 
 # Import necessary libraries / Importar bibliotecas necesarias
 import os
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, HTTPException
 from prometheus_fastapi_instrumentator import Instrumentator
+from sqlalchemy import text
+from sqlalchemy.orm import Session
+# Import connections generator to DB / Importar el generador de conexiones a la BD
+from app.database import get_db
 
 # Create FastAPI application instance / Crear instancia de la aplicación FastAPI
 app = FastAPI(
     title="SaaS Multi-Tenant API",
-    version="3.0.0"
+    version="4.0.0"
 )
 
 # Automatic instrumentation to expose standard Prometheus metrics (/metrics)
@@ -27,12 +31,37 @@ def read_root():
         "status": "healthy",
         "app_name": os.getenv("APP_NAME", "SaaS App"),
         "environment": os.getenv("ENVIRONMENT", "unknown"),
-        "version": "v3.0.0",
-        "message": "SaaS Platform API v3.0.0 running on AWS EKS with GitOps!",
+        "version": "v4.0.0",
+        "message": "SaaS Platform API v4.0.0 with RDS Database running on AWS EKS with GitOps!",
     }
 
 # Route for health check used by Kubernetes (Liveness/Readiness Probes)
 # Ruta para el health check usado por Kubernetes (Liveness/Readiness Probes)
 @app.get("/healthz")
 def health_check():
-    return {"status": "ok", "version": "v3.0.0"}
+    return {"status": "ok", "version": "v4.0.0"}
+
+# ------------------------------------------------------------------------------
+# NEW: Dedicated Database Health Check Endpoint
+# Ruta dedicada para verificar la conectividad real con Amazon RDS PostgreSQL
+# ------------------------------------------------------------------------------
+@app.get("/health/db")
+def health_check_db(db: Session = Depends(get_db)):
+    """
+    Verifica la conexión ejecutando 'SELECT 1' en RDS PostgreSQL.
+    Depends(get_db) inyecta y cierra automáticamente la sesión de la base de datos.
+    """
+    try:
+        result = db.execute(text("SELECT 1")).scalar()
+        if result == 1:
+            return {
+                "status": "healthy",
+                "database": "connected",
+                "engine": "PostgreSQL"
+            }
+        raise HTTPException(status_code=500, detail="Database query failed")
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Database connection failed: {str(e)}"
+        )
