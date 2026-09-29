@@ -24,7 +24,7 @@ on:
 # 2. PERMISOS OIDC: Necesarios para intercambiar tokens criptográficos con AWS IAM
 permissions:
   id-token: write # Allows requesting the OIDC JWT token / Permite solicitar el token JWT de OIDC
-  contents: read  # Allows cloning the repository's source code / Permite clonar el código fuente del repositorio
+  contents: write  # Allows cloning the repository's source code / Permite clonar el código fuente del repositorio
 
 env:
   AWS_REGION: eu-west-1
@@ -83,6 +83,7 @@ jobs:
       # Step E: GitOps Step – Update the tag in kustomization.yaml and push to Git.
       # Step E: PASO GITOPS - Actualizar el tag en kustomization.yaml y hacer push a Git
       - name: Update Kustomize Image Tag & Push to Git
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
