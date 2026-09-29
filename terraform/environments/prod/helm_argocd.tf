@@ -35,11 +35,6 @@ resource "helm_release" "argocd" {
     name  = "server.metrics.enabled"
     value = "true"
   }
-  # Allow HTTP access without secure cookie restrictions
-  set {
-    name  = "server.extraArgs"
-    value = "{--insecure}"
-  }
 
   depends_on = [
     module.eks,
