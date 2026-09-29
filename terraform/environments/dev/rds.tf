@@ -41,6 +41,7 @@ resource "aws_security_group" "rds" {
 
   # Egress Rule: Open outbound access for responses / Regla de Salida: Salida abierta para respuestas
   egress {
+    description = "Allow all outbound traffic / Permitir todo el trafico de salida"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"

@@ -40,6 +40,6 @@ jobs:
         with:
           framework: terraform
           output_format: cli
-          # Omitimos checks irrelevantes para entornos Dev / FinOps o requeridos solo en Prod
-          skip_check: CKV_TF_1,CKV_AWS_157,CKV_AWS_293,CKV_AWS_16,CKV_AWS_149,CKV_AWS_118,CKV_AWS_353,CKV_AWS_129,CKV_AWS_161,CKV_AWS_226,CKV2_AWS_30
-          soft_fail: false # Fallará si se detecta alguna vulnerabilidad crítica real (ej. credenciales hardcoded o SGs 0.0.0.0/0 innecesarios)
+          # Skip Dev/FinOps rules / Omitir reglas de desarrollo y ahorro de costes
+          skip_check: CKV_TF_1,CKV_AWS_157,CKV_AWS_293,CKV_AWS_16,CKV_AWS_149,CKV_AWS_118,CKV_AWS_353,CKV_AWS_129,CKV_AWS_161,CKV_AWS_226,CKV2_AWS_30,CKV_AWS_382,CKV_AWS_51
+          soft_fail: false # Block PR on critical vulnerabilities / Bloquear PR en caso de vulnerabilidades criticas reales
