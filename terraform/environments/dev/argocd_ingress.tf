@@ -9,10 +9,10 @@ resource "kubernetes_ingress_v1" "argocd_alb" {
     namespace = "argocd"
     annotations = {
       # Specifies that the Ingress must be managed by the AWS Load Balancer Controller / Especifica que el Ingress debe ser gestionado por AWS Load Balancer Controller
-      "kubernetes.io/ingress.class"               = "alb"
-      "alb.ingress.kubernetes.io/scheme"          = "internet-facing"
-      "alb.ingress.kubernetes.io/target-type"     = "ip"
-      
+      "kubernetes.io/ingress.class"           = "alb"
+      "alb.ingress.kubernetes.io/scheme"      = "internet-facing"
+      "alb.ingress.kubernetes.io/target-type" = "ip"
+
       # Listener en puerto 80 (HTTP) externamente sin requerir ACM Certificate
       "alb.ingress.kubernetes.io/listen-ports" = "[{\"HTTP\": 80}]"
 

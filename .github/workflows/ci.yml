@@ -74,10 +74,10 @@ jobs:
         run: |
           # 1. Build the Docker image using the Dockerfile in src/ / Construir la imagen Docker usando el Dockerfile en src/
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./src
-          
+
           # 2. Push the tags (commit hash and 'latest') to AWS ECR / Subir las etiquetas (hash del commit y latest) a AWS ECR
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          
+
           echo "::notice ::Image uploaded successfully: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
       # Step E: GitOps Step – Update the tag in kustomization.yaml and push to Git.

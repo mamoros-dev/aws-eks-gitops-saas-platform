@@ -17,7 +17,7 @@ resource "aws_db_subnet_group" "rds" {
   subnet_ids = module.vpc.private_subnets
 
   tags = {
-    Name = "${var.project_name}-${var.environment}-rds-subnet-group"
+    Name        = "${var.project_name}-${var.environment}-rds-subnet-group"
     Environment = var.environment
     ManagedBy   = "Terraform"
   }
@@ -35,7 +35,8 @@ resource "aws_security_group" "rds" {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    security_groups = [module.eks.cluster_security_group_id, module.eks.node_security_group_id]
+    cidr_blocks     = ["10.0.0.0/16"]
+    security_groups = [module.eks.cluster_security_group_id]
   }
 
   # Egress Rule: Open outbound access for responses / Regla de Salida: Salida abierta para respuestas
@@ -47,7 +48,7 @@ resource "aws_security_group" "rds" {
   }
 
   tags = {
-    Name = "${var.project_name}-${var.environment}-rds-sg"
+    Name        = "${var.project_name}-${var.environment}-rds-sg"
     Environment = var.environment
     ManagedBy   = "Terraform"
   }
@@ -55,25 +56,25 @@ resource "aws_security_group" "rds" {
 
 # 4. Amazon RDS PostgreSQL instance / Instancia de Amazon RDS PostgreSQL
 resource "aws_db_instance" "postgres" {
-  identifier           = "${var.project_name}-${var.environment}-db"
-  allocated_storage    = 20                  # 20 GB initial storage / 20 GB de almacenamiento inicial
-  max_allocated_storage = 50                 # Disk auto-scaling up to 50 GB / Autoescalado de disco hasta 50 GB
-  engine               = "postgres"
-  engine_version       = "15"                # Stable version of PostgreSQL / Versión Estable de PostgreSQL
-  instance_class       = "db.t4g.micro"      # Cost-effective instance ideal for dev (ARM Graviton) / Instancia económica ideal para dev (ARM Graviton)
-  
-  db_name  = "appdb"                        # Initial database name / Nombre inicial de la BD
-  username = "dbadmin"                      # Admin user / Usuario administrador
+  identifier            = "${var.project_name}-${var.environment}-db"
+  allocated_storage     = 20 # 20 GB initial storage / 20 GB de almacenamiento inicial
+  max_allocated_storage = 50 # Disk auto-scaling up to 50 GB / Autoescalado de disco hasta 50 GB
+  engine                = "postgres"
+  engine_version        = "15"           # Stable version of PostgreSQL / Versión Estable de PostgreSQL
+  instance_class        = "db.t4g.micro" # Cost-effective instance ideal for dev (ARM Graviton) / Instancia económica ideal para dev (ARM Graviton)
+
+  db_name  = "appdb"   # Initial database name / Nombre inicial de la BD
+  username = "dbadmin" # Admin user / Usuario administrador
   password = random_password.db_password.result
 
   db_subnet_group_name   = aws_db_subnet_group.rds.name
   vpc_security_group_ids = [aws_security_group.rds.id]
-  
-  publicly_accessible = false                # INACCESSIBLE from the Internet / INACCESIBLE desde Internet
-  skip_final_snapshot = true                 # In dev, we skip the final snapshot upon destruction / En dev omitimos el snapshot final al destruir
+
+  publicly_accessible = false # INACCESSIBLE from the Internet / INACCESIBLE desde Internet
+  skip_final_snapshot = true  # In dev, we skip the final snapshot upon destruction / En dev omitimos el snapshot final al destruir
 
   tags = {
-    Name = "${var.project_name}-${var.environment}-postgres"
+    Name        = "${var.project_name}-${var.environment}-postgres"
     Environment = var.environment
     ManagedBy   = "Terraform"
   }
@@ -82,10 +83,10 @@ resource "aws_db_instance" "postgres" {
 # 5. AWS Secrets Manager: Securely store credentials in AWS / AWS Secrets Manager: Guardar las credenciales de forma segura en AWS
 resource "aws_secretsmanager_secret" "db_credentials" {
   name                    = "${var.project_name}-${var.environment}-db-credentials-v1"
-  recovery_window_in_days = 0                # Allows immediate deletion in dev if we run `destroy`/Permite borrado inmediato en dev si hacemos destroy
+  recovery_window_in_days = 0 # Allows immediate deletion in dev if we run `destroy`/Permite borrado inmediato en dev si hacemos destroy
 
   tags = {
-    Name = "${var.project_name}-${var.environment}-db-credentials"
+    Name        = "${var.project_name}-${var.environment}-db-credentials"
     Environment = var.environment
     ManagedBy   = "Terraform"
   }

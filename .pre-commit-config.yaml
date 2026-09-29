@@ -1,0 +1,33 @@
+repos:
+  # 1. Standard Git and file validations / Validaciones estándar de Git y archivos
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace       # Removes unnecessary whitespace at the end of lines / Elimina espacios en blanco innecesarios al final de las líneas
+      - id: end-of-file-fixer         # Ensure that the files end with a blank line / Asegura que los archivos terminan con una línea en blanco
+      - id: check-yaml                # Validates that the YAML manifests (Kubernetes/ArgoCD) are valid / Valida que los manifiestos YAML (Kubernetes/ArgoCD) sean válidos
+      - id: check-added-large-files   # Avoid accidentally uploading large files (>500kB) / Evita subir archivos pesados (>500kB) por accidente
+        args: ['--maxkb=500']
+
+  # 2. Terraform formatting and validation / Formato y validación de Terraform
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.88.0
+    hooks:
+      - id: terraform_fmt             # Automatically format your .tf code according to the official standard / Formatea automáticamente tu código .tf según el estándar oficial
+      - id: terraform_validate        # Validates that the Terraform syntax is correct / Valida que la sintaxis de Terraform sea correcta
+        files: ^terraform/environments/
+
+  # 3. Secret and Credential Detection with Gitleaks / Detección de Secretos y Credenciales con Gitleaks
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.2
+    hooks:
+      - id: gitleaks                  # Analyze the files to ensure there are no passwords or AWS keys / Analiza los archivos para asegurar que no hay passwords ni AWS keys
+
+  # 4. Infrastructure as Code Security with Checkov / Seguridad de Infraestructura como Código con Checkov
+  - repo: local
+    hooks:
+      - id: checkov
+        name: checkov
+        language: system
+        pass_filenames: false
+        entry: checkov -d terraform/ --framework terraform --soft-fail

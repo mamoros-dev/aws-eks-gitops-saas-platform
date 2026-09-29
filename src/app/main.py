@@ -87,7 +87,7 @@ def create_tenant_form(
     new_tenant = Tenant(name=name, subdomain=subdomain, plan=plan)
     db.add(new_tenant)
     db.commit()
-    
+
     # Redirects to the visual dashboard to view the updated record / Redirige al Dashboard visual para ver el registro actualizado
     return RedirectResponse(url="/", status_code=303)
 

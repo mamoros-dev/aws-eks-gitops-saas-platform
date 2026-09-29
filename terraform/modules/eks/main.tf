@@ -11,11 +11,11 @@ module "eks" {
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
 
-  # Network Security: The EKS API Server will be accessible from outside, 
+  # Network Security: The EKS API Server will be accessible from outside,
   # but the Worker Nodes will be strictly and only in Private Subnets.
   # Seguridad de Red: El Servidor API de EKS será accesible desde el exterior,
   # pero los Nodos de Trabajo estarán estrictamente y solo en Subredes Privadas
-  cluster_endpoint_public_access = true
+  cluster_endpoint_public_access  = true
   cluster_endpoint_private_access = true
 
   vpc_id     = var.vpc_id
@@ -27,7 +27,7 @@ module "eks" {
 
   # Configuración de Security Groups para comunicación EKS <-> Nodos
   node_security_group_tags = {
-  "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 
   # Managed Node Groups (EC2 Instances)
@@ -80,7 +80,7 @@ module "aws_lb_controller_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.39"
 
-  role_name      = "${var.cluster_name}-aws-lb-controller"
+  role_name                              = "${var.cluster_name}-aws-lb-controller"
   attach_load_balancer_controller_policy = true
 
   oidc_providers = {
