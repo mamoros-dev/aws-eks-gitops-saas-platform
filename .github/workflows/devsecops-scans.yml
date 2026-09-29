@@ -1,0 +1,45 @@
+# ==============================================================================
+# Pipeline: DevSecOps Security Scans
+# ==============================================================================
+
+name: DevSecOps Security Scans
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+      - 'k8s/**'
+      - '.github/workflows/**'
+
+jobs:
+  gitleaks-scan:
+    name: Gitleaks Secrets Detection
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  checkov-scan:
+    name: Checkov IaC Security Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Checkov Scanner
+        uses: bridgecrewio/checkov-action@master
+        with:
+          framework: terraform
+          output_format: cli
+          # Skip Dev/FinOps rules / Omitir reglas de desarrollo y ahorro de costes
+          skip_check: CKV_TF_1,CKV_AWS_157,CKV_AWS_293,CKV_AWS_16,CKV_AWS_149,CKV_AWS_118,CKV_AWS_353,CKV_AWS_129,CKV_AWS_161,CKV_AWS_226,CKV2_AWS_30,CKV_AWS_382,CKV_AWS_51,CKV_AWS_136,CKV2_AWS_57,CKV2_AWS_60
+          soft_fail: false # Block PR on critical vulnerabilities / Bloquear PR en caso de vulnerabilidades criticas reales

@@ -41,6 +41,7 @@ resource "aws_security_group" "rds" {
 
   # Egress Rule: Open outbound access for responses / Regla de Salida: Salida abierta para respuestas
   egress {
+    description = "Allow all outbound traffic / Permitir todo el trafico de salida"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -70,8 +71,9 @@ resource "aws_db_instance" "postgres" {
   db_subnet_group_name   = aws_db_subnet_group.rds.name
   vpc_security_group_ids = [aws_security_group.rds.id]
 
-  publicly_accessible = false # INACCESSIBLE from the Internet / INACCESIBLE desde Internet
-  skip_final_snapshot = true  # In dev, we skip the final snapshot upon destruction / En dev omitimos el snapshot final al destruir
+  publicly_accessible   = false # INACCESSIBLE from the Internet / INACCESIBLE desde Internet
+  skip_final_snapshot   = true  # In dev, we skip the final snapshot upon destruction / En dev omitimos el snapshot final al destruir
+  copy_tags_to_snapshot = true  # Copy tags to DB snapshots / Copiar etiquetas a los snapshots de la BD
 
   tags = {
     Name        = "${var.project_name}-${var.environment}-postgres"
