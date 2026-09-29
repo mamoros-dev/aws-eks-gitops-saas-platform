@@ -7,7 +7,9 @@ cat << 'EOF' > .gitignore
 *.tfvars
 *.tfvars.json
 .terraform/
+.terraform backup/
 .terraform.lock.hcl
+.terraform.lock backup.hcl
 crash.log
 crash.*.log
 override.tf

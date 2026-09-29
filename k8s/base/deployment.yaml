@@ -60,7 +60,7 @@ spec:
             secretKeyRef:
               name: app-db-credentials
               key: DB_PASSWORD
-                  
+
         resources:
           requests: # Minimum resources requested for the container / Recursos mínimos solicitados para el contenedor
             memory: "128Mi"

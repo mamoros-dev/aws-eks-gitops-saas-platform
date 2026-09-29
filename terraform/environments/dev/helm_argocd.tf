@@ -35,7 +35,7 @@ resource "helm_release" "argocd" {
     name  = "server.extraArgs"
     value = "{--insecure}"
   }
-  
+
   depends_on = [
     module.eks,
     kubernetes_namespace.argocd
