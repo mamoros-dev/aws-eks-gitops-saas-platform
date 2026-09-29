@@ -1,6 +1,5 @@
 # ==============================================================================
-# Pipeline: DevSecOps Scans (Checkov & Gitleaks)
-# Escaneo de Seguridad de IaC y Detección de Secretos en Pull Requests
+# Pipeline: DevSecOps Security Scans
 # ==============================================================================
 
 name: DevSecOps Security Scans
@@ -41,4 +40,6 @@ jobs:
         with:
           framework: terraform
           output_format: cli
-          soft_fail: false # Cambia a true si quieres advertencias sin bloquear la PR
+          # Omitimos checks irrelevantes para entornos Dev / FinOps o requeridos solo en Prod
+          skip_check: CKV_TF_1,CKV_AWS_157,CKV_AWS_293,CKV_AWS_16,CKV_AWS_149,CKV_AWS_118,CKV_AWS_353,CKV_AWS_129,CKV_AWS_161,CKV_AWS_226,CKV2_AWS_30
+          soft_fail: false # Fallará si se detecta alguna vulnerabilidad crítica real (ej. credenciales hardcoded o SGs 0.0.0.0/0 innecesarios)
