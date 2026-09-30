@@ -4,9 +4,13 @@ kind: Kustomization
 namespace: saas-app
 
 resources:
-  - ../../../k8s/base
+- ../../../k8s/base
 
 patches:
-  - path: ingress-patch.yaml
-  - path: configmap-patch.yaml
-  - path: external-secret-patch.yaml
+- path: ingress-patch.yaml
+- path: configmap-patch.yaml
+- path: external-secret-patch.yaml
+images:
+- name: 700213287974.dkr.ecr.eu-west-1.amazonaws.com/saas-platform-prod-api
+  newName: 700213287974.dkr.ecr.eu-west-1.amazonaws.com/saas-platform-prod-api
+  newTag: 78bb0b2ef2d7fb6044dea1870450b1c4f2212acb
