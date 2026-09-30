@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: saas-backend-config
+  namespace: saas-app
+data:
+  ENVIRONMENT: "production"

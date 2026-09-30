@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: saas-backend-prod
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/mamoros-dev/aws-eks-gitops-saas-platform.git'
+    targetRevision: HEAD
+    path: gitops/overlays/prod
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: saas-app
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

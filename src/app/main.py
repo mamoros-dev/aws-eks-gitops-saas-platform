@@ -1,7 +1,7 @@
-# ==============================================================================
+# ===============================================================================
 # Application: SaaS Backend API / API de Backend SaaS
 # Description: Minimal FastAPI service returning health and environment info
-# ==============================================================================
+# ===============================================================================
 
 # Import necessary libraries / Importar bibliotecas necesarias
 import os
