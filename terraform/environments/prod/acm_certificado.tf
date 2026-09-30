@@ -31,4 +31,8 @@ resource "aws_acm_certificate" "argocd_acm" {
     Environment = "prod"
     ManagedBy   = "Terraform"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
