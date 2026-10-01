@@ -12,6 +12,6 @@ resources:
 - cluster-secret-store.yaml
 - external-secret.yaml
 images:
-- name: 700213287974.dkr.ecr.eu-west-1.amazonaws.com/saas-platform-dev-api
-  newName: 700213287974.dkr.ecr.eu-west-1.amazonaws.com/saas-platform-dev-api
+- name: 700213287974.dkr.ecr.eu-west-1.amazonaws.com/saas-platform-prod-api
+  newName: 700213287974.dkr.ecr.eu-west-1.amazonaws.com/saas-platform-prod-api
   newTag: 13837d6c448cc10777ad8dee27de71895eedc869
