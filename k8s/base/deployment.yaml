@@ -19,7 +19,7 @@ spec:
       containers:
       - name: api
         # Imagen temporal de pruebas hasta que publiquemos la nuestra en ECR / Temporary test image until we publish our own in ECR
-        image: 700213287974.dkr.ecr.eu-west-1.amazonaws.com/saas-platform-dev-api:latest
+        image: 700213287974.dkr.ecr.eu-west-1.amazonaws.com/saas-platform-prod-api:latest
         ports:
         - containerPort: 80 # port for the container to listen on / puerto para que el contenedor escuche
           name: http
