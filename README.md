@@ -7,6 +7,8 @@
 ![CD Strategy](https://img.shields.io/badge/GitOps-ArgoCD-green)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Dependabot](https://img.shields.io/badge/Dependabot-active-0288d1?logo=dependabot)](./.github/dependabot.yml)
+![WAF](https://img.shields.io/badge/AWS_WAFv2-Enabled-red?logo=amazonaws)
+![DevSecOps](https://img.shields.io/badge/DevSecOps-Checkov_%26_Gitleaks-brightgreen)
 
 ![diagrama](./docs/images/diagrama.png)
 
@@ -20,7 +22,7 @@
 - [Infrastructure Verification](#infrastructure-verification)
 - [CI/CD & DevSecOps Workflows](#cicd--devsecops-workflows)
 - [How to install and run the project](#how-to-install-and-run-the-project)
-- [How to use the project](#how-to-use-the-project)`
+- [How to use the project](#how-to-use-the-project)
 - [Stack](#stack)
 - [Status](#status)
 - [Author](#author)
@@ -36,6 +38,9 @@
 + **Ingress & Security:** Public access to EKS worker nodes is disabled. The AWS Load Balancer Controller provisions an Application Load Balancer to enforce HTTPS redirection and route incoming external requests.
 + **Automated DevSecOps Pipeline:** Static code analysis, secret scanning (Gitleaks), and container vulnerability assessment (Trivy).
 + **Full Observability & TLS:** Native Prometheus metrics exposure, Grafana dashboards, and automated SSL certificates with Cert-Manager.
++ **Edge Security & SQLi Protection:** AWS WAFv2 WebACL attached to the Application Load Balancer enforcing managed rulesets (AWSManagedRulesCommonRuleSet, AWSManagedRulesSQLiRuleSet) to block Layer 7 attacks in real time.
++ **Network & Audit Observability:** Network traffic is logged via AWS VPC Flow Logs and AWS WAF Logging directly to Amazon CloudWatch Log Groups with automated retention and policy-compliant encryption.
+> **Note on Implementation:** The production environment (`prod`) represents the complete end-to-end architecture with full hardening, HTTPS termination, and asynchronous messaging pipelines. The development environment (`dev`) provides a lightweight, cost-optimized baseline for continuous integration.
 
 ## Infrastructure Verification
 
@@ -145,7 +150,7 @@ kubectl apply -f gitops/infrastructure/kube-prometheus-stack/grafana-ingress-pro
 kubectl get secret --namespace monitoring kube-prometheus-stack-grafana -o jsonpath="{.data.admin-password}" | ba
 ```
 
-#### Step 5: ### Security & Transport Layer Security (TLS)
+#### Step 5: Security & Transport Layer Security (TLS)
 - **Automated ACM Provisioning:** ArgoCD Ingress dynamically binds to AWS ACM certificates managed via Terraform (`aws_acm_certificate.argocd_acm.arn`).
 - **Static Ingress TLS Annotations:** Ingress manifests referencing ACM certificates (such as Grafana) use target annotations (`alb.ingress.kubernetes.io/certificate-arn`).
 > **Note for Deployment:** Replace `arn:aws:acm:eu-west-1:123456789012:certificate/...` in `gitops/infrastructure/kube-prometheus-stack/grafana-ingress-prod.yaml` with your own ACM Certificate ARN created in `eu-west-1`.
@@ -154,23 +159,38 @@ kubectl get secret --namespace monitoring kube-prometheus-stack-grafana -o jsonp
 #### How to Destroy the Infrastructure
 To completely tear down all provisioned resources and avoid cloud costs:
 ```bash
-# 1. Delete all Ingress resources from all namespaces so that the AWS ALB Controller cleans up the Load Balancers in AWS.
+# 1. Strip finalizers from ArgoCD applications to prevent cascade locking
+kubectl get application -n argocd -o name 2>/dev/null | xargs -I {} kubectl patch {} -n argocd -p '{"metadata":{"finalizers":null}}' --type=merge 2>/dev/null
+
+# 2. Delete orphaned ArgoCD applications
+kubectl delete application --all -n argocd --cascade=orphan --ignore-not-found
+
+# 3. Delete all Ingress resources from all namespaces so that the AWS ALB Controller cleans up the Load Balancers in AWS.
 kubectl delete ingress --all -A --ignore-not-found
 
-# 2. Remove Kubernetes Ingresses & Load Balancers first (to clear AWS ALB dependencies)
+# 4. Delete ingress & application manifests directly if targeted cleanup is required
 kubectl delete -f gitops/infrastructure/kube-prometheus-stack/grafana-ingress-dev.yaml
 or
 kubectl delete -f gitops/infrastructure/kube-prometheus-stack/grafana-ingress-prod.yaml
-
-kubectl delete -f gitops/infrastructure/kube-prometheus-stack/prometheus-stack.yaml --ignore-not-found
-kubectl delete namespace saas-app --ignore-not-found
-kubectl delete namespace argocd --ignore-not-found
 
 kubectl delete -f gitops/apps/saas-backend-dev.yaml
 or
 kubectl delete -f gitops/apps/saas-backend-prod.yaml
 
-# 3. Destroy Terraform Infrastructure
+kubectl delete -f gitops/infrastructure/kube-prometheus-stack/prometheus-stack.yaml --ignore-not-found
+
+# 5. Remove application and infrastructure namespaces
+kubectl delete namespace saas-app --ignore-not-found
+kubectl delete namespace argocd --ignore-not-found
+kubectl delete namespace monitoring --ignore-not-found
+
+# 6. Desactivate instance RDS deleted protection
+aws rds modify-db-instance \
+  --db-instance-identifier saas-platform-prod-db \
+  --no-deletion-protection \
+  --apply-immediately
+
+# 7. Destroy Terraform Infrastructure
 cd terraform/environments/dev
 or
 cd terraform/environments/prod
@@ -212,7 +232,8 @@ print(cur.fetchall())
 + **GitOps & Delivery:** ArgoCD, Kustomize, Helm
 + **Security & Secret Management:** External Secrets Operator (ESO), IRSA
 + **Application Backend:** Python (FastAPI / Flask, psycopg2)
-+ **Dependency & Bot Management:** Dependabot
++ **Security & Secret Management:** External Secrets Operator (ESO), IRSA, AWS WAFv2 (WebACL / Layer 7 Security), Gitleaks, Checkov.
++ **Observability & Logging:** Kube-Prometheus-Stack, Grafana, CloudWatch Log Groups (VPC Flow Logs & WAF Logs).
 
 ## Status
 + **Completed** — Fully functional IaC and Kubernetes deployment setup ready for production-like evaluation and cloud portfolio demonstration.
