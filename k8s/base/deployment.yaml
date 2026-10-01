@@ -15,6 +15,7 @@ spec:
       labels:
         app: saas-backend # label to identify the pods for this deployment / etiqueta para identificar los pods de este despliegue
     spec:
+      serviceAccountName: saas-backend-sa # service account for the deployment / cuenta de servicio para el despliegue
       containers:
       - name: api
         # Imagen temporal de pruebas hasta que publiquemos la nuestra en ECR / Temporary test image until we publish our own in ECR
