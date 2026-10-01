@@ -7,6 +7,7 @@
 resource "aws_ecr_repository" "this" {
   name                 = var.repository_name
   image_tag_mutability = var.image_tag_mutability
+  force_delete         = var.force_delete
 
   # Security scanning on image push / Escaneo automático de seguridad al subir imágenes
   image_scanning_configuration {

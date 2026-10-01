@@ -38,6 +38,7 @@ module "ecr" {
   environment          = "prod"
   repository_name      = "saas-platform-prod-api"
   image_tag_mutability = "IMMUTABLE" # Production security: tags cannot be overwritten / Seguridad en producción: los tags no se pueden sobrescribir
+  force_delete         = true
 }
 
 # ------------------------------------------------------------------------------

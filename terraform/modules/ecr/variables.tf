@@ -15,6 +15,12 @@ variable "image_tag_mutability" {
   default     = "MUTABLE" # En Dev usaremos MUTABLE para iterar rápido; en Prod usaremos IMMUTABLE
 }
 
+variable "force_delete" {
+  description = "If true, will delete the repository even if it contains images / Si es true, borrará el repositorio aunque contenga imágenes"
+  type        = bool
+  default     = false
+}
+
 variable "environment" {
   type        = string
   description = "Environment name (dev/prod) / Nombre del entorno (dev/prod)"
