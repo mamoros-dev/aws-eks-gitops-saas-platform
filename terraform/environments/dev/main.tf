@@ -38,6 +38,7 @@ module "ecr" {
   environment          = "dev"
   repository_name      = "saas-platform-dev-api"
   image_tag_mutability = "MUTABLE" # only in dev we use mutable tags to speed up testing / Solo en Dev usamos tags mutables para agilizar pruebas
+  force_delete         = true
 }
 
 # ------------------------------------------------------------------------------
