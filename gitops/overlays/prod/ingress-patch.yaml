@@ -7,3 +7,5 @@ metadata:
     alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:eu-west-1:700213287974:certificate/88087b18-5c1a-4a45-8c8f-203e6c394800"
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     alb.ingress.kubernetes.io/ssl-redirect: "443"
+    # AWS WAFv2 Association Annotation / Anotación para asociar WAFv2 al ALB
+    alb.ingress.kubernetes.io/wafv2-acl-arn: "arn:aws:wafv2:eu-west-1:700213287974:regional/webacl/saas-platform-prod-webacl/3c61f18a-c060-480e-b91b-10f615ffb062"

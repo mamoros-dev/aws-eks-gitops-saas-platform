@@ -65,3 +65,8 @@ output "rds_security_group_id" {
   value       = aws_security_group.rds.id
   description = "ID of the Security Group attached to RDS / ID del Security Group de RDS"
 }
+
+output "waf_web_acl_arn" {
+  description = "ARN of WAFv2 WebACL for Ingress ALB annotation / ARN del WebACL para la anotación del ALB Ingress"
+  value       = module.security.waf_web_acl_arn
+}

@@ -61,3 +61,18 @@ module "eks" {
   max_size       = 5
   desired_size   = 3
 }
+
+# ==============================================================================
+# Security Module Instance for Production / Instancia de Seguridad para Producción
+# ==============================================================================
+# Description: Instantiates AWS WAFv2 and VPC Flow Logs for prod environment
+# Descripción: Instancia AWS WAFv2 y VPC Flow Logs para el entorno prod
+# ==============================================================================
+
+module "security" {
+  source = "../../modules/security"
+
+  project_name = var.project_name
+  environment  = var.environment
+  vpc_id       = module.vpc.vpc_id # Pass VPC ID output from VPC module / Pasa la salida VPC ID del módulo VPC
+}
