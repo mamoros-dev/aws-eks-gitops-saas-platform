@@ -13,4 +13,4 @@ patches:
 images:
 - name: 700213287974.dkr.ecr.eu-west-1.amazonaws.com/saas-platform-prod-api
   newName: 700213287974.dkr.ecr.eu-west-1.amazonaws.com/saas-platform-prod-api
-  newTag: 30fc79e2704285bc509ae83257981d9f3c4e2966
+  newTag: 4942a8f536af472e52d9ba8571ceec302d144349
