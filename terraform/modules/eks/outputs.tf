@@ -28,3 +28,13 @@ output "aws_lb_controller_role_arn" {
   description = "ARN of the IAM role for AWS Load Balancer Controller"
   value       = module.aws_lb_controller_irsa.iam_role_arn
 }
+
+output "oidc_provider_arn" {
+  description = "ARN of the OIDC Provider for IRSA / ARN del proveedor OIDC para IRSA"
+  value       = module.eks.oidc_provider_arn
+}
+
+output "oidc_provider" {
+  description = "The URL of the OIDC Issuer for IRSA / URL del emisor OIDC para IRSA"
+  value       = module.eks.oidc_provider
+}

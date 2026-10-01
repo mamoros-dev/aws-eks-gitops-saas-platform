@@ -27,9 +27,13 @@ spec:
             name: saas-backend-config # name of the ConfigMap to reference / nombre del ConfigMap a referenciar
 
         # ----------------------------------------------------------------------
-        # Environment variables for RDS database / Variables de entorno para la BD RDS
+        # Environment variables for RDS database & SQS queue / Variables de entorno para la BD RDS y la cola SQS
         # ----------------------------------------------------------------------
         env:
+        - name: SQS_QUEUE_URL
+          value: "https://sqs.eu-west-1.amazonaws.com/700213287974/saas-platform-prod-tenant-events"
+        - name: AWS_REGION
+          value: "eu-west-1"
         - name: DB_ENGINE
           valueFrom:
             secretKeyRef:
