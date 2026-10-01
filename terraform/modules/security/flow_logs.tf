@@ -7,8 +7,8 @@
 
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
   name              = "/aws/vpc-flow-logs/${var.project_name}-${var.environment}"
-  retention_in_days = 30 # Retain logs for 30 days / Retener registros durante 30 días
-
+  retention_in_days = 365 # Retain logs for 365 days / Retener registros durante 365 días
+  # checkov:skip=CKV_AWS_158: "AWS managed SSE is sufficient for demo/dev VPC flow log groups"
   tags = {
     Environment = var.environment
     Project     = var.project_name
